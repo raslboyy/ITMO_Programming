@@ -4,14 +4,14 @@
 #include "math.h"
 
 struct Point {
-    float x;
-    float y;
+  float x;
+  float y;
 };
 
 struct Triangle {
-    struct Point a;
-    struct Point b;
-    struct Point c;
+  struct Point a;
+  struct Point b;
+  struct Point c;
 };
 
 float perimeter(struct Triangle triangle);
