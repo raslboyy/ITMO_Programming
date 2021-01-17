@@ -24,7 +24,8 @@ int main() {
     printf("%f ", dynamic_array[i]);
   }
   printf("\n");
-  free(dynamic_array);
 
+  free(dynamic_array);
+  dynamic_array = NULL;
   return 0;
 }

@@ -1,7 +1,5 @@
 #include "Triangle.h"
-
 #include <stdio.h>
-
 #include "math.h"
 
 float len(struct Point a, struct Point b) {
