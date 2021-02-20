@@ -1,0 +1,13 @@
+#ifndef LAB2_01_SRC_TRIANGLE_HPP_
+#define LAB2_01_SRC_TRIANGLE_HPP_
+
+#include "Polygon.hpp"
+
+class Triangle : public Polygon {
+  Triangle(const Broken &broken);
+  Triangle(Point p1, Point p2, Point p3);
+  Triangle(const Triangle &other);
+  Triangle &operator=(const Triangle &other);
+};
+
+#endif //LAB2_01_SRC_TRIANGLE_HPP_
