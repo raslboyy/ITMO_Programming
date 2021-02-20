@@ -1,11 +1,5 @@
 #include "Polygon.hpp"
 
-#include <iostream>
-
-#include <math.h>
-
-#include "Vector.hpp"
-
 Polygon::Polygon(const Broken &broken) : Closed(broken), area_(0) {
   if (!this->is_convex())
     std::cout << "Error" << std::endl;
@@ -15,14 +9,17 @@ Polygon::Polygon(const Broken &broken) : Closed(broken), area_(0) {
   area_ /= 2;
   area_ = std::fabs(area_);
 }
-Polygon::Polygon(const Polygon &other) : Closed(other.broken_) {}
+Polygon::Polygon(const Polygon &other) : Closed(other.broken_), area_(other.area_) {}
+
+void Polygon::swap(Polygon &other) {
+  Closed::swap(other);
+  std::swap(area_, other.area_);
+}
 Polygon &Polygon::operator=(const Polygon &other) {
   Polygon(other).swap(*this);
   return *this;
 }
-double Polygon::area() const {
-  return area_;
-}
+
 bool Polygon::is_triangle() const {
   if (broken_.count() != 3)
     return false;
@@ -44,7 +41,7 @@ bool Polygon::is_regular() const {
     if (std::fabs(broken_.get(i).len() - broken_.get(i + 1).len()) > EPS)
       return false;
   double cross_product = -100;
-  for (int i = 0; i < n; i++){
+  for (size_t i = 0; i != n; i++){
     Vector v1(broken_.get(i));
     Vector v2(broken_.get((i + 1) % n));
     if (cross_product != -100 && fabs(asin(v1 * v2 / v1.len() / v2.len()) - cross_product) > EPS)
@@ -52,4 +49,13 @@ bool Polygon::is_regular() const {
     cross_product = asin(v1 * v2 / v1.len() / v2.len());
   }
   return true;
+}
+double Polygon::area() const {
+  return area_;
+}
+
+std::ostream &operator<<(std::ostream &os, const Polygon &polygon) {
+  os << "area = " << polygon.area() << " ";
+  os << polygon.broken();
+  return os;
 }

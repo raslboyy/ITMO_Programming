@@ -5,7 +5,7 @@ Trapezoid::Trapezoid(const Broken &broken) : Polygon(broken) {
     return;
 }
 Trapezoid::Trapezoid(const Trapezoid &other) : Polygon(other.broken_) {}
-Trapezoid::Trapezoid(Point p1, Point p2, Point p3, Point p4) : Polygon(Broken({
+Trapezoid::Trapezoid(Point p1, Point p2, const Point& p3, Point p4) : Polygon(Broken({
                                                                                   Segment(p1, p2),
                                                                                   Segment(p2, p3),
                                                                                   Segment(p3, p4),

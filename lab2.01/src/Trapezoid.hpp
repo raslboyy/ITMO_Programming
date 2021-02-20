@@ -4,8 +4,9 @@
 #include "Polygon.hpp"
 
 class Trapezoid : public Polygon {
-  Trapezoid(const Broken &broken);
-  Trapezoid(Point p1, Point p2, Point p3, Point p4);
+ public:
+  explicit Trapezoid(const Broken &broken);
+  Trapezoid(Point p1, Point p2, const Point& p3, Point p4);
   Trapezoid(const Trapezoid &other);
   Trapezoid &operator=(const Trapezoid &other);
 };

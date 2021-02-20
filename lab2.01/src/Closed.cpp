@@ -1,20 +1,14 @@
 #include "Closed.hpp"
 
-#include <iostream>
-
-#include "Vector.hpp"
-
 Closed::Closed(const Broken &broken) : broken_(broken) {
   if (!broken.is_closed())
     std::cout << "Error" << std::endl;
 }
-
 Closed::Closed(const Closed &other) : broken_(other.broken_) {}
 
 void Closed::swap(Closed &other) {
   this->broken_.swap(other.broken_);
 }
-
 Closed & Closed::operator=(const Closed &other) {
   Closed(other).swap(*this);
   return *this;
@@ -37,7 +31,11 @@ bool Closed::is_convex() const {
   }
   return cnt1 * cnt2 == 0;
 }
+const Broken &Closed::broken() const {
+  return broken_;
+}
 
-//std::ostream &operator<<(std::ostream &os, const Closed &closed) {
-//  os << closed.
-//}
+std::ostream &operator<<(std::ostream &os, const Closed &closed) {
+  os << closed.broken();
+  return os;
+}

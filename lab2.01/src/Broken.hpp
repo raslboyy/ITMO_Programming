@@ -8,7 +8,7 @@
 
 class Broken {
  public:
-  Broken();
+  Broken(const Segment& segment);
   Broken(const Broken &other);
   explicit Broken(std::vector<Segment> segments); // const - ?
 

@@ -2,17 +2,20 @@
 #define LAB2_01_SRC_CLOSED_HPP_
 
 #include "Broken.hpp"
+#include "Vector.hpp"
 
 class Closed {
  public:
-  Closed(const Broken &broken);
+  explicit Closed(const Broken &broken);
   Closed(const Closed &other);
-  Closed &operator=(const Closed &other);
   virtual ~Closed() = default;
 
-  void swap(Closed &other);
-  double len() const;
-  bool is_convex() const;
+  virtual void swap(Closed &other);
+  Closed &operator=(const Closed &other);
+
+  [[nodiscard]] double len() const;
+  [[nodiscard]] bool is_convex() const;
+  [[nodiscard]] const Broken &broken() const;
  protected:
   Broken broken_;
 };

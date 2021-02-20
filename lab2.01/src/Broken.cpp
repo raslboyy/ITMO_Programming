@@ -1,6 +1,6 @@
 #include "Broken.hpp"
 
-Broken::Broken() : len_(0), segments_() {}
+Broken::Broken(const Segment& segment) : len_(segment.len()), segments_({segment}) {}
 Broken::Broken(const Broken &other) : segments_(other.segments_), len_(other.len_) {}
 Broken::Broken(std::vector<Segment> segments) : segments_(std::move(segments)), len_(0) {
   for (const auto& i : segments_)
@@ -20,12 +20,8 @@ double Broken::len() const {
   return len_;
 }
 void Broken::add_point(const Point &a) {
-  if (!segments_.empty()) {
-    segments_.emplace_back(Segment(segments_.back().b(), a));
-    len_ += segments_.back().len();
-  }
-  else
-    segments_.emplace_back(Segment(a, a));
+  segments_.emplace_back(Segment(segments_.back().b(), a));
+  len_ += segments_.back().len();
 }
 size_t Broken::count() const {
   return segments_.size();
@@ -38,8 +34,8 @@ bool Broken::is_closed() const {
 }
 
 std::ostream &operator<<(std::ostream &os, const Broken &broken) {
-  os << "len: " << broken.len() << " points: ";
-  for (int i = 1; i < broken.count(); i++)
-    os << broken.get(i).a() << " ";
+  os << "len = " << broken.len();
+  for (int i = 0; i < broken.count(); i++)
+    os << " " << broken.get(i).a();
   return os;
 }

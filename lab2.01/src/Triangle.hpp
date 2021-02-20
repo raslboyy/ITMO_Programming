@@ -4,7 +4,8 @@
 #include "Polygon.hpp"
 
 class Triangle : public Polygon {
-  Triangle(const Broken &broken);
+ public:
+  explicit Triangle(const Broken &broken);
   Triangle(Point p1, Point p2, Point p3);
   Triangle(const Triangle &other);
   Triangle &operator=(const Triangle &other);
