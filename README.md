@@ -9,4 +9,7 @@
 - [Лабораторная работа №7](https://github.com/raslboyy/ITMO_Programming/blob/master/lab1.07/main.c)
 - [Лабораторная работа №8](https://github.com/raslboyy/ITMO_Programming/blob/master/lab1.08/main.c)
 - [Лабораторная работа №9](https://github.com/raslboyy/ITMO_Programming/blob/master/lab1.09/main.c)
+- [Лабораторная работа №10](https://github.com/raslboyy/ITMO_Programming/blob/master/lab1.10/main.c)
+- [Лабораторная работа №11](https://github.com/raslboyy/ITMO_Programming/blob/master/lab1.11/main.c)
+- [Лабораторная работа №12](https://github.com/raslboyy/ITMO_Programming/blob/master/lab1.12/main.c) 
 ## 2 сем
