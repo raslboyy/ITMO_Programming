@@ -7,7 +7,7 @@
 class Closed {
  public:
   explicit Closed(const Broken &broken);
-  Closed(const Closed &other);
+  Closed(const Closed &other) = default;
   virtual ~Closed() = default;
 
   virtual void swap(Closed &other);

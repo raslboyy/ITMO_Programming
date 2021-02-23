@@ -1,13 +1,15 @@
 #ifndef LAB2_01_SRC_TRAPEZOID_HPP_
 #define LAB2_01_SRC_TRAPEZOID_HPP_
 
+#include <exception>
+
 #include "Polygon.hpp"
 
 class Trapezoid : public Polygon {
  public:
   explicit Trapezoid(const Broken &broken);
-  Trapezoid(Point p1, Point p2, const Point& p3, Point p4);
-  Trapezoid(const Trapezoid &other);
+  Trapezoid(const Point& p1, const Point& p2, const Point& p3, const Point& p4);
+  Trapezoid(const Trapezoid &other) = default;
   Trapezoid &operator=(const Trapezoid &other);
 };
 

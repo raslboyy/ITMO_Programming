@@ -6,8 +6,8 @@
 class Triangle : public Polygon {
  public:
   explicit Triangle(const Broken &broken);
-  Triangle(Point p1, Point p2, Point p3);
-  Triangle(const Triangle &other);
+  Triangle(const Point& p1, const Point& p2, const Point& p3);
+  Triangle(const Triangle &other) = default;
   Triangle &operator=(const Triangle &other);
 };
 

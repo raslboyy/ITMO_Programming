@@ -1,11 +1,17 @@
 #include "Polygon.hpp"
 
 Polygon::Polygon(const Broken &broken) : Closed(broken), area_(0) {
-  if (!this->is_convex())
-    std::cout << "Error" << std::endl;
-  size_t n = broken_.count();
-  for (int i = 0; i != n; i++)
-    area_ += double(broken_.get(i).a().x() * broken_.get(i).b().y() - broken_.get(i).a().y() * broken_.get(i).b().x());
+  try {
+    if (!this->is_convex())
+      throw std::exception();
+  }
+  catch (std::exception) {
+    std::cerr << "Error in Polygon::Polygon(const Broken &broken)\n";
+  }
+  unsigned n = broken_.count();
+  for (int i = 0; i < n; i++)
+    area_ +=
+        double(broken_.get(i).x() * broken_.get((i + 1) % n).y() - broken_.get(i).y() * broken_.get((i + 1) % n).x());
   area_ /= 2;
   area_ = std::fabs(area_);
 }
@@ -23,27 +29,32 @@ Polygon &Polygon::operator=(const Polygon &other) {
 bool Polygon::is_triangle() const {
   if (broken_.count() != 3)
     return false;
-  for (int i = 0; i != 3; i++)
-    if (broken_.get(i).len() >= broken_.get((i + 1) % 3).len() + broken_.get((i + 2) % 3).len())
+  for (int i = 0; i < 4; i++) {
+    double a1 = broken_.get(i, i + 1).len();
+    double a2 = broken_.get(i + 1, i + 2).len();
+    double a3 = broken_.get(i + 2, i + 3).len();
+    if (a1 >= a2 + a3)
       return false;
+  }
   return true;
 }
 bool Polygon::is_trapezoid() const {
   if (broken_.count() != 4)
     return false;
-  return (broken_.get(0) || broken_.get(2)) || (broken_.get(1) || broken_.get(3));
+  return (broken_.get(0, 1) || broken_.get(2, 3)) ||
+      (broken_.get(1, 2) || broken_.get(3, 4));
 }
 bool Polygon::is_regular() const {
-  size_t n = broken_.count();
+  unsigned n = broken_.count();
   if (n < 3)
     return false;
-  for (int i = 0; i < n - 1; i++)
-    if (std::fabs(broken_.get(i).len() - broken_.get(i + 1).len()) > EPS)
+  for (int i = 0; i < n; i++)
+    if (std::fabs(broken_.get(i, i + 1).len() - broken_.get(i + 1, i + 2).len()) > EPS)
       return false;
   double cross_product = -100;
-  for (size_t i = 0; i != n; i++){
-    Vector v1(broken_.get(i));
-    Vector v2(broken_.get((i + 1) % n));
+  for (size_t i = 0; i != n; i++) {
+    Vector v1(broken_.get(i, i + 1));
+    Vector v2(broken_.get(i + 1, i + 2));
     if (cross_product != -100 && fabs(asin(v1 * v2 / v1.len() / v2.len()) - cross_product) > EPS)
       return false;
     cross_product = asin(v1 * v2 / v1.len() / v2.len());

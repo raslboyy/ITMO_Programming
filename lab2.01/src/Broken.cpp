@@ -1,14 +1,27 @@
 #include "Broken.hpp"
 
-Broken::Broken(const Segment& segment) : len_(segment.len()), segments_({segment}) {}
-Broken::Broken(const Broken &other) : segments_(other.segments_), len_(other.len_) {}
-Broken::Broken(std::vector<Segment> segments) : segments_(std::move(segments)), len_(0) {
-  for (const auto& i : segments_)
-    len_ += i.len();
+Broken::Broken(const Point &p) :
+    len_(0),
+    points_({p}),
+    is_closed_(false) {}
+Broken::Broken(std::vector<Point> points) :
+    points_(std::move(points)),
+    len_(0),
+    is_closed_(false) {
+  for (int i = 1; i <= points.size(); i++)
+    len_ += Segment(points[i - 1], points[i]).len();
+  if (!points_.empty())
+    is_closed_ = points_[0] == points_.back();
+  if (is_closed_)
+    points_.pop_back();
 };
+Broken::Broken(const Broken &other) :
+    points_(other.points_),
+    len_(other.len_),
+    is_closed_(other.is_closed_) {}
 
 void Broken::swap(Broken &other) {
-  std::swap(segments_, other.segments_);
+  std::swap(points_, other.points_);
   std::swap(len_, other.len_);
 }
 Broken &Broken::operator=(const Broken &other) {
@@ -16,26 +29,32 @@ Broken &Broken::operator=(const Broken &other) {
   return *this;
 }
 
+void Broken::add_point(const Point &p) {
+  len_ += Segment(points_.back(), p).len();
+  points_.emplace_back(p);
+  is_closed_ = points_[0] == points_.back();
+  if (is_closed_)
+    points_.pop_back();
+}
 double Broken::len() const {
   return len_;
 }
-void Broken::add_point(const Point &a) {
-  segments_.emplace_back(Segment(segments_.back().b(), a));
-  len_ += segments_.back().len();
+unsigned Broken::count() const {
+  return points_.size();
 }
-size_t Broken::count() const {
-  return segments_.size();
+Point Broken::get(unsigned i) const {
+  return points_[i];
 }
-Segment Broken::get(int i) const {
-  return segments_[i];
+Segment Broken::get(unsigned int i, unsigned int j) const {
+  return Segment(points_[i % points_.size()], points_[j % points_.size()]);
 }
 bool Broken::is_closed() const {
-  return segments_[0].a() == segments_.back().b();
+  return is_closed_;
 }
 
 std::ostream &operator<<(std::ostream &os, const Broken &broken) {
   os << "len = " << broken.len();
   for (int i = 0; i < broken.count(); i++)
-    os << " " << broken.get(i).a();
+    os << " " << broken.get(i);
   return os;
 }

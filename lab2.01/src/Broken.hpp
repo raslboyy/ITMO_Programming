@@ -8,21 +8,25 @@
 
 class Broken {
  public:
-  Broken(const Segment& segment);
+  explicit Broken(const Point& p);
+  explicit Broken(std::vector<Point> points);
   Broken(const Broken &other);
-  explicit Broken(std::vector<Segment> segments); // const - ?
+//  Broken(const Broken &other) = default;
 
   void swap(Broken &other);
   Broken &operator=(const Broken &other);
+//  Broken &operator=(const Broken &other) = default;
 
-  void add_point(const Point &a);
+  void add_point(const Point &p);
   [[nodiscard]] double len() const;
-  [[nodiscard]] size_t count() const;
-  [[nodiscard]] Segment get(int i) const;
+  [[nodiscard]] unsigned count() const;
+  [[nodiscard]] Point get(unsigned i) const;
+  [[nodiscard]] Segment get(unsigned i, unsigned j) const;
   [[nodiscard]] bool is_closed() const;
 
  private:
-  std::vector<Segment> segments_;
+  std::vector<Point> points_;
+  bool is_closed_;
   double len_;
 };
 

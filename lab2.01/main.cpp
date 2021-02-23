@@ -1,37 +1,53 @@
 #include <iostream>
+
 #include "src/Triangle.hpp"
 #include "src/Trapezoid.hpp"
+#include "src/Regular.hpp"
 
 int main() {
 
-  // Ломанная
-  Broken broken({Point(1, 1), Point(2, 1)});
+  std::cout.precision(2);
   std::cout << std::fixed;
+  // Ломанная
+  Broken broken(Point(1, 1));
+  broken.add_point(Point(2, 1));
   broken.add_point(Point(2, 2));
   broken.add_point(Point(1, 2));
   std::cout << broken << std::endl;
+
   Broken broken_copy = broken;
-  std::cout << broken_copy << std::endl;
+  broken_copy.add_point({1, 1});
   Broken broken_assigment{{{1, 1}, {1, 1}}};
   broken_assigment = broken;
-  std::cout << broken_assigment << std::endl;
+  broken_assigment.add_point({100, 100});
+  std::cout << broken << std::endl;
+  std::cout << broken_copy << std::endl;
+  std::cout << broken_assigment << std::endl << std::endl;
 
   // Замкнутая ломанная
   broken.add_point(Point(1, 1));
   Closed closed(broken);
-  std::cout << closed << std::endl;
+  std::cout << closed << std::endl << std::endl;
 
   // Выпуклый многоугольник
   Polygon polygon(broken);
-  std::cout << polygon << std::endl;
+  std::cout << polygon << std::endl << std::endl;
 
   // Треугольник
   Triangle triangle({1, 1}, {3, 1}, {2, 2});
-  std::cout << triangle << std::endl;
+  std::cout << triangle << std::endl << std::endl;
   // Трапеция
   Trapezoid trapezoid(broken);
-  std::cout << trapezoid << std::endl;
+  std::cout << trapezoid << std::endl << std::endl;
   // Правильный многоугольник
+  broken = Broken({
+                      {1, 1},
+                      {2, 1},
+                      {3, 3},
+                      {1, 1}
+  });
+  Regular regular(broken);
+  std::cout << regular << std::endl;
 
 
   return 0;
