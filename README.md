@@ -13,3 +13,6 @@
 - [Лабораторная работа №11](https://github.com/raslboyy/ITMO_Programming/blob/master/lab1.11/main.c)
 - [Лабораторная работа №12](https://github.com/raslboyy/ITMO_Programming/blob/master/lab1.12/main.c) 
 ## 2 сем
+- [Лабораторная работа №1](https://github.com/raslboyy/ITMO_Programming/tree/master/lab2.01/main.cpp) 
+- [Лабораторная работа №2](https://github.com/raslboyy/ITMO_Programming/tree/master/lab2.02/main.cpp) 
+- [Лабораторная работа №3](https://github.com/raslboyy/ITMO_Programming/tree/master/lab2.03/main.cpp)  
