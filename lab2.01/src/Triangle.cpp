@@ -28,3 +28,11 @@ Triangle &Triangle::operator=(const Triangle &other) {
   Triangle(other).swap(*this);
   return *this;
 }
+
+double Triangle::semi_p() const {
+  return broken_.len() / 2;
+}
+double Triangle::area() const {
+  double S = sqrt(semi_p() * (semi_p() - broken_.get(0, 1).len()) * (semi_p() - broken_.get(1, 2).len()) * (semi_p() - broken_.get(2, 3).len()));
+  return S;
+}

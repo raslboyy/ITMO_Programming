@@ -24,3 +24,20 @@ Trapezoid &Trapezoid::operator=(const Trapezoid &other) {
   Trapezoid(other).swap(*this);
   return *this;
 }
+
+double Trapezoid::h() const {
+  if (broken_.get(0, 1) || broken_.get(2, 3)) {
+    double S_triangle = Triangle({broken_.get(0), broken_.get(2), broken_.get(3)}).area();
+    return 2 * S_triangle / broken_.get(2, 3).len();
+  }
+  if (broken_.get(1, 2) || broken_.get(3, 4)) {
+    double S_triangle = Triangle({broken_.get(1), broken_.get(3), broken_.get(4)}).area();
+    return 2 * S_triangle / broken_.get(3, 4).len();
+  }
+}
+double Trapezoid::area() const {
+  if (broken_.get(0, 1) || broken_.get(2, 3))
+    return 0.5 * (broken_.get(0, 1).len() + broken_.get(2, 3).len()) * h();
+  if (broken_.get(1, 2) || broken_.get(3, 4))
+    return 0.5 * (broken_.get(1, 2).len() + broken_.get(3, 4).len()) * h();
+}

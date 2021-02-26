@@ -1,6 +1,6 @@
 #include "Polygon.hpp"
 
-Polygon::Polygon(const Broken &broken) : Closed(broken), area_(0) {
+Polygon::Polygon(const Broken &broken) : Closed(broken) {
   try {
     if (!this->is_convex())
       throw std::exception();
@@ -8,18 +8,11 @@ Polygon::Polygon(const Broken &broken) : Closed(broken), area_(0) {
   catch (std::exception) {
     std::cerr << "Error in Polygon::Polygon(const Broken &broken)\n";
   }
-  unsigned n = broken_.count();
-  for (int i = 0; i < n; i++)
-    area_ +=
-        double(broken_.get(i).x() * broken_.get((i + 1) % n).y() - broken_.get(i).y() * broken_.get((i + 1) % n).x());
-  area_ /= 2;
-  area_ = std::fabs(area_);
 }
-Polygon::Polygon(const Polygon &other) : Closed(other.broken_), area_(other.area_) {}
+Polygon::Polygon(const Polygon &other) : Closed(other.broken_) {}
 
 void Polygon::swap(Polygon &other) {
   Closed::swap(other);
-  std::swap(area_, other.area_);
 }
 Polygon &Polygon::operator=(const Polygon &other) {
   Polygon(other).swap(*this);
@@ -62,7 +55,14 @@ bool Polygon::is_regular() const {
   return true;
 }
 double Polygon::area() const {
-  return area_;
+  double S = 0;
+  unsigned n = broken_.count();
+  for (int i = 0; i < n; i++)
+    S +=
+        double(broken_.get(i).x() * broken_.get((i + 1) % n).y() - broken_.get(i).y() * broken_.get((i + 1) % n).x());
+  S /= 2;
+  S = std::fabs(S);
+  return S;
 }
 
 std::ostream &operator<<(std::ostream &os, const Polygon &polygon) {

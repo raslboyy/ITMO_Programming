@@ -15,3 +15,9 @@ Regular & Regular::operator=(const Regular &other) {
   Regular(other).swap(*this);
   return *this;
 }
+
+double Regular::area() const {
+  double a = broken_.count();
+  double b = broken_.get(0, 1).len();
+  return a * b * broken_.get(0, 1).len() / 4 / tan(M_PI / a);
+}

@@ -9,6 +9,9 @@ class Triangle : public Polygon {
   Triangle(const Point& p1, const Point& p2, const Point& p3);
   Triangle(const Triangle &other) = default;
   Triangle &operator=(const Triangle &other);
+
+  [[nodiscard]] double semi_p() const;
+  [[nodiscard]] double area() const override;
 };
 
 #endif //LAB2_01_SRC_TRIANGLE_HPP_

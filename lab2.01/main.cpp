@@ -40,15 +40,19 @@ int main() {
   Trapezoid trapezoid(broken);
   std::cout << trapezoid << std::endl << std::endl;
   // Правильный многоугольник
-  broken = Broken({
-                      {1, 1},
-                      {2, 1},
-                      {3, 3},
-                      {1, 1}
-  });
+//  broken = Broken({
+//                      {1, 1},
+//                      {2, 1},
+//                      {3, 3},
+//                      {1, 1}
+//  });
   Regular regular(broken);
-  std::cout << regular << std::endl;
+  std::cout << regular << std::endl << std::endl;
 
+  // Динамический полиморфизм
+  std::vector<Polygon *> array = {&triangle, &trapezoid, &regular};
+  for (const auto item : array)
+    std::cout << *item << std::endl;
 
   return 0;
 }

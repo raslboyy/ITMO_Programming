@@ -4,6 +4,7 @@
 #include <exception>
 
 #include "Polygon.hpp"
+#include "Triangle.hpp"
 
 class Trapezoid : public Polygon {
  public:
@@ -11,6 +12,9 @@ class Trapezoid : public Polygon {
   Trapezoid(const Point& p1, const Point& p2, const Point& p3, const Point& p4);
   Trapezoid(const Trapezoid &other) = default;
   Trapezoid &operator=(const Trapezoid &other);
+
+  [[nodiscard]] double h() const;
+  [[nodiscard]] double area() const override;
 };
 
 

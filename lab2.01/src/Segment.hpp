@@ -17,6 +17,9 @@ class Segment {
 
   [[nodiscard]] Point a() const;
   [[nodiscard]] Point b() const;
+  [[nodiscard]] double A() const;
+  [[nodiscard]] double B() const;
+  [[nodiscard]] double C() const;
   [[nodiscard]] double len() const;
 
  private:

@@ -19,8 +19,8 @@ class Polygon : public Closed {
   [[nodiscard]] bool is_regular() const;
   [[nodiscard]] virtual double area() const;
 
- private:
-  double area_;
+// private:
+//  double area_;
 };
 
 std::ostream &operator<<(std::ostream &os, const Polygon &polygon);

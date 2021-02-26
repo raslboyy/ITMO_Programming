@@ -8,12 +8,10 @@ Broken::Broken(std::vector<Point> points) :
     points_(std::move(points)),
     len_(0),
     is_closed_(false) {
-  for (int i = 1; i <= points.size(); i++)
-    len_ += Segment(points[i - 1], points[i]).len();
+  for (int i = 1; i < points_.size(); i++)
+    len_ += Segment(points_[i - 1], points_[i]).len();
   if (!points_.empty())
     is_closed_ = points_[0] == points_.back();
-  if (is_closed_)
-    points_.pop_back();
 };
 Broken::Broken(const Broken &other) :
     points_(other.points_),
@@ -33,20 +31,18 @@ void Broken::add_point(const Point &p) {
   len_ += Segment(points_.back(), p).len();
   points_.emplace_back(p);
   is_closed_ = points_[0] == points_.back();
-  if (is_closed_)
-    points_.pop_back();
 }
 double Broken::len() const {
   return len_;
 }
 unsigned Broken::count() const {
-  return points_.size();
+  return (is_closed_ ? points_.size() - 1 : points_.size());
 }
 Point Broken::get(unsigned i) const {
-  return points_[i];
+  return points_[i % count()];
 }
 Segment Broken::get(unsigned int i, unsigned int j) const {
-  return Segment(points_[i % points_.size()], points_[j % points_.size()]);
+  return Segment(points_[i % count()], points_[j % count()]);
 }
 bool Broken::is_closed() const {
   return is_closed_;

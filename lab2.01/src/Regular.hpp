@@ -8,6 +8,8 @@ class Regular : public Polygon {
   explicit Regular(const Broken &broken);
   Regular(const Regular &other) = default;
   Regular &operator=(const Regular &other);
+
+  double area() const override;
 };
 
 #endif //LAB2_01_SRC_REGULAR_HPP_

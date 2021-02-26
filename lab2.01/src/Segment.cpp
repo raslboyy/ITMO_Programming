@@ -24,6 +24,15 @@ Point Segment::a() const {
 Point Segment::b() const {
   return b_;
 }
+double Segment::A() const {
+  return a_.y() - b_.y();
+}
+double Segment::B() const {
+  return b_.x() - a_.x();
+}
+double Segment::C() const {
+  return - A()*a_.x() - B() * a_.y();
+}
 double Segment::len() const {
   return len_;
 }
