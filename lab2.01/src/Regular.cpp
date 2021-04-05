@@ -2,14 +2,12 @@
 
 #include <iostream>
 
-Regular::Regular(const Broken &broken) : Polygon(broken) {
+Regular::Regular(const Closed &closed) : Polygon(closed) {
   try {
     if (!this->is_regular())
       throw std::exception();
   }
-  catch (std::exception) {
-    std::cerr << "Error in Regular::Regular(const Broken &broken)\n";
-  }
+  catch (...) {}
 }
 Regular & Regular::operator=(const Regular &other) {
   Regular(other).swap(*this);
@@ -17,7 +15,11 @@ Regular & Regular::operator=(const Regular &other) {
 }
 
 double Regular::area() const {
-  double a = broken_.count();
-  double b = broken_.get(0, 1).len();
-  return a * b * broken_.get(0, 1).len() / 4 / tan(M_PI / a);
+  double a = closed_.broken().count();
+  double b = closed_.broken().get(0, 1).len();
+  return a * b * closed_.broken().get(0, 1).len() / 4 / tan(M_PI / a);
+}
+
+bool Regular::is_regular() const {
+  return true;
 }

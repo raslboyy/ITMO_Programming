@@ -30,14 +30,14 @@ int main() {
   std::cout << closed << std::endl << std::endl;
 
   // Выпуклый многоугольник
-  Polygon polygon(broken);
+  Polygon polygon((Closed(broken)));
   std::cout << polygon << std::endl << std::endl;
 
   // Треугольник
   Triangle triangle({1, 1}, {3, 1}, {2, 2});
   std::cout << triangle << std::endl << std::endl;
   // Трапеция
-  Trapezoid trapezoid(broken);
+  Trapezoid trapezoid((Closed(broken)));
   std::cout << trapezoid << std::endl << std::endl;
   // Правильный многоугольник
 //  broken = Broken({
@@ -46,7 +46,7 @@ int main() {
 //                      {3, 3},
 //                      {1, 1}
 //  });
-  Regular regular(broken);
+  Regular regular((Closed(broken)));
   std::cout << regular << std::endl << std::endl;
 
   // Динамический полиморфизм

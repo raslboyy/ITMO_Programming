@@ -6,21 +6,22 @@
 
 #include "Closed.hpp"
 
-class Polygon : public Closed {
+class Polygon {
  public:
-  explicit Polygon(const Broken &broken);
+  explicit Polygon(const Closed &closed);
   Polygon(const Polygon &other);
 
   void swap(Polygon &other);
   Polygon &operator=(const Polygon &other);
 
-  [[nodiscard]] bool is_triangle() const;
-  [[nodiscard]] bool is_trapezoid() const;
-  [[nodiscard]] bool is_regular() const;
+  [[nodiscard]] virtual bool is_triangle() const;
+  [[nodiscard]] virtual bool is_trapezoid() const;
+  [[nodiscard]] virtual bool is_regular() const;
   [[nodiscard]] virtual double area() const;
+  [[nodiscard]] const Closed &closed() const;
 
-// private:
-//  double area_;
+ protected:
+  Closed closed_;
 };
 
 std::ostream &operator<<(std::ostream &os, const Polygon &polygon);

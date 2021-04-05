@@ -11,7 +11,7 @@ int main() {
   p3 = -p3;
   std::cout << p3;
   std::cout << p1 + p3;
-  p2 -= {std::vector<double>({1, 1, 1})};
+  p2 -= Polynomial{std::vector<double>({1, 1, 1})};
   std::cout << p2 * p1;
   std::cout << 5 * p1;
   std::cout << (10 * p1) / 2;

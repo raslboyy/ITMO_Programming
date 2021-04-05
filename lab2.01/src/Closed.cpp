@@ -5,9 +5,7 @@ Closed::Closed(const Broken &broken) : broken_(broken) {
     if (!broken.is_closed())
       throw std::exception();
   }
-  catch (std::exception) {
-    std::cerr << "Error in Closed::Closed(const Broken &broken)\n";
-  }
+  catch (...) {}
 }
 //Closed::Closed(const Closed &other) : broken_(other.broken_) {}
 

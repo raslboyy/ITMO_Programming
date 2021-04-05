@@ -7,7 +7,7 @@
 class Polynomial {
  public:
   Polynomial(double value);
-  Polynomial(std::vector<double> P);
+  explicit Polynomial(std::vector<double> P);
   Polynomial(int n, double value);
   Polynomial(const Polynomial &other) = default;
   ~Polynomial() = default;

@@ -5,11 +5,12 @@
 
 class Regular : public Polygon {
  public:
-  explicit Regular(const Broken &broken);
+  explicit Regular(const Closed &closed);
   Regular(const Regular &other) = default;
   Regular &operator=(const Regular &other);
 
-  double area() const override;
+  [[nodiscard]] double area() const override;
+  [[nodiscard]] bool is_regular() const override;
 };
 
 #endif //LAB2_01_SRC_REGULAR_HPP_
