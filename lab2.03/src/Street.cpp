@@ -49,6 +49,6 @@ Street::Street(const String &name) :
 
 };
 
-void Street::add_obj(const std::shared_ptr<GeoObject>& obj) {
+void Street::add_obj(const std::shared_ptr<GeoObject> &obj) {
   objects_.emplace_back(obj);
 }

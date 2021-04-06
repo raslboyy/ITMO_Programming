@@ -1,6 +1,7 @@
 #include "Route.hpp"
+#include "Station.hpp"
 
-void Route::add_station(Station *station) {
+void Route::add_station(const std::shared_ptr<Station> &station) {
   is_ = true;
   stations_.emplace_back(station);
 }
@@ -28,6 +29,7 @@ double Route::len() {
         min_e[to] = len;
     }
   }
-  return sum;
+  len_ = sum;
+  return len_;
 }
 

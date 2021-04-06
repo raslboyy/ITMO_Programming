@@ -7,9 +7,11 @@
 #include "../libs/StringPro/src/StringPro.hpp"
 
 #include "GeoObject.hpp"
-#include "Route.hpp"
 
 // почему рекомендует заменить const String &name на std::move ?
+// дефолтные конструктор копирования норм ?
+
+class Route;
 
 class Station : public GeoObject {
  public:
@@ -18,7 +20,9 @@ class Station : public GeoObject {
       name_(std::move(name)),
       official_name_(std::move(officialName)),
       number_(number) {};
-  void add_route(const std::shared_ptr<Route>& route);
+  void add_route(const std::shared_ptr<Route> &route);
+
+
  private:
   String name_;
   String official_name_;

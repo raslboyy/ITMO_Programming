@@ -18,7 +18,7 @@ class Street {
   [[nodiscard]] String name() const { return name_; }
   [[nodiscard]] String uniform_name() const { return uniform_name_; }
 
-  void add_obj(const std::shared_ptr<GeoObject>& obj);
+  void add_obj(const std::shared_ptr<GeoObject> &obj);
   [[nodiscard]] int count_obj() const { return objects_.size(); }
 
   Street(const Street &other) = delete;
@@ -26,7 +26,6 @@ class Street {
  private:
   String name_;
   String uniform_name_;
-//  StreetEnum type_;
   std::vector<std::shared_ptr<GeoObject>> objects_;
 
   //  static inline const std::vector<String> unificationGarbage = {
