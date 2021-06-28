@@ -1,202 +1,350 @@
-#ifndef LAB2_05_CIRCULAR_BUFFER_H
-#define LAB2_05_CIRCULAR_BUFFER_H
-
-#include <cstdio>
-#include <iostream>
+#pragma once
+#include <cassert>
 #include <iterator>
-#include <cstddef>
 
-template<class T>
-class circular_buffer {
- public:
-  class iterator;
+template <typename T>
+class list {
+  struct Node;
+  struct FakeNode;
 
-  circular_buffer();
-  explicit circular_buffer(size_t capacity);
-  circular_buffer(const circular_buffer<T> &other);
+  template <typename U>
+  struct abstract_iterator {
+    using iterator_category = std::bidirectional_iterator_tag;
+    using difference_type = std::ptrdiff_t;
+    using value_type = U;
+    using pointer = U*;
+    using reference = U&;
 
-  void swap(circular_buffer &other);
-  circular_buffer<T> &operator=(const circular_buffer<T> &other);
+    abstract_iterator(abstract_iterator const& other) : abstract_iterator(other.node) {};
 
-  ~circular_buffer();
+    reference operator*() const {
+      return static_cast<Node*>(node)->value;
+    };
 
-  void push_back(const T &item) {
-    *(begin_ + size_++) = item;
-    if (size_ == capacity_) {
-      begin_++;
-      size_--;
+    pointer operator->() const {
+      return &(static_cast<Node*>(node)->value);
+    };
+
+    abstract_iterator& operator++() & {
+      node = node->next;
+      return *this;
+    };
+
+    abstract_iterator operator++(int) & {
+      abstract_iterator tmp(node);
+      ++(*this);
+      return tmp;
+    };
+
+    abstract_iterator& operator--() & {
+      node = node->prev;
+      return *this;
+    };
+
+    abstract_iterator operator--(int) & {
+      abstract_iterator tmp(node);
+      --(*this);
+      return tmp;
+    };
+
+    friend bool operator==(abstract_iterator const& a, abstract_iterator const& b) {
+      return a.node == b.node;
     }
-  }
-  void push_front(const T &item) {
-    *(--begin_) = item;
-    size_++;
-    if (size_ == capacity_)
-      size_--;
-  }
 
-  void pop_back() {
-    size_ = std::max(0ul, size_ - 1);
-  }
-  void pop_front() {
-    ++begin_;
-    size_ = std::max(0ul, size_ - 1);
-  }
+    friend bool operator!=(abstract_iterator const& a, abstract_iterator const& b) {
+      return a.node != b.node;
+    }
 
-  iterator begin() const { return begin_; }
-  iterator end() const { return begin_ + size_; }
-  T front() const { return *begin(); }
-  T back() const { return *end(); };
+    explicit abstract_iterator(FakeNode* node) : node(node) {};
 
-  T operator[](size_t index) const { return *(begin_ + index); };
-  T &operator[](size_t index) { return *(begin_ + index); }
+   private:
+    FakeNode* node;
+  };
 
-  void set_capacity(size_t capacity);
+  struct list_iterator;
+  struct const_list_iterator;
 
-  [[nodiscard]] size_t capacity() const { return capacity_; }
-  [[nodiscard]] size_t size() const { return size_; }
-
-  template<class U>
-  friend std::ostream &operator<<(std::ostream &os, const circular_buffer<U> &cb);
-
- private:
-  T *array_;
-  size_t capacity_;
-  size_t size_;
-  iterator begin_;
-};
-
-template<class T>
-std::ostream &operator<<(std::ostream &os, const circular_buffer<T> &cb) {
-  for (auto i : cb)
-    os << i << ' ';
-  os << '\n';
-  return os;
-}
-
-template<class T>
-circular_buffer<T>::circular_buffer(size_t capacity) :
-    array_(new T[capacity + 1]),
-    capacity_(capacity + 1),
-    size_(0) {
-  begin_ = iterator(array_, &array_, capacity_);
-}
-
-template<class T>
-circular_buffer<T>::circular_buffer() :
-    circular_buffer(0) {}
-
-template<class T>
-circular_buffer<T>::circular_buffer(const circular_buffer<T> &other) :
-    array_(new T[other.capacity_]),
-    capacity_(other.capacity_),
-    begin_(other.begin_),
-    size_(other.size_) {
-  for (size_t i = 0; i != other.capacity_; i++)
-    array_[i] = other.array_[i];
-}
-
-template<class T>
-void circular_buffer<T>::swap(circular_buffer &other) {
-  std::swap(this->array_, other.array_);
-  std::swap(this->begin_, other.begin_);
-  std::swap(this->end_, other.end_);
-  std::swap(this->capacity_, this->capacity_);
-}
-
-template<class T>
-circular_buffer<T> &circular_buffer<T>::operator=(const circular_buffer<T> &other) {
-  circular_buffer(other).swap(*this);
-  return *this;
-}
-
-template<class T>
-circular_buffer<T>::~circular_buffer() {
-  delete[] array_;
-  array_ = nullptr;
-}
-
-template<class T>
-void circular_buffer<T>::set_capacity(size_t capacity) {
-  T *array = new T[capacity + 1];
-  for (size_t i = 0; i != capacity_; i++)
-    array[i] = array_[i];
-  capacity_ = capacity + 1;
-  begin_ = iterator(array + (static_cast<T *>(begin_) - array_), &array_, capacity_);
-  delete[] array_;
-  array_ = array;
-}
-
-template<class T>
-class circular_buffer<T>::iterator {
  public:
-  using iterator_category = std::random_access_iterator_tag;
-  using difference_type = std::ptrdiff_t;
-  using value_type = T;
-  using pointer = T *;
-  using reference = T &;
+  // bidirectional iterator
+  using iterator = list_iterator;
+  // bidirectional iterator
+  using const_iterator = const_list_iterator;
+  using reverse_iterator = std::reverse_iterator<iterator>;
+  using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
-  iterator() : ptr_(nullptr), begin_(nullptr), size_(0) {}
-  explicit iterator(pointer ptr, pointer *begin, difference_type size) :
-      ptr_(ptr),
-      begin_(begin),
-      size_(size) {}
 
-  reference operator*() const { return *ptr_; }
-  pointer operator->() { return ptr_; }
-  explicit operator T *() const { return ptr_; }
+  // O(1)
+  list() noexcept {
+    fake.next = fake.prev = &fake;
+  };
 
-  iterator &operator++() {
-    ++ptr_;
-    if (ptr_ == *begin_ + size_)
-      ptr_ = *begin_;
+  // O(n), strong
+  list(list const& other) : list() {
+    try {
+      for (auto it = other.begin(); it != other.end(); ++it) {
+        push_back(*it);
+      }
+    } catch (...) {
+      clear();
+      throw;
+    }
+  };
+
+  // O(n), strong
+  list& operator=(list const& other) {
+    list(other).swap(*this);
     return *this;
-  }
-  iterator operator++(int) {
-    iterator tmp = *this;
-    ++(*this);
-    return tmp;
+  };
+
+  // O(n)
+  ~list() {
+    clear();
+  };
+
+  // O(1)
+  bool empty() const noexcept {
+    return fake.next == &fake;
+  };
+
+  // O(1)
+  T& front() noexcept {
+    return static_cast<Node*>(fake.next)->value;
+  };
+
+  // O(1)
+  T const& front() const noexcept {
+    return static_cast<Node*>(fake.next)->value;
+  };
+
+  // O(1), strong
+  void push_front(T const& new_value) {
+    Node* new_node = new Node(new_value);
+    new_node->next = fake.next;
+    new_node->prev = &fake;
+    fake.next->prev = new_node;
+    fake.next = new_node;
+  };
+
+  // O(1)
+  void pop_front() noexcept {
+    Node* old_node = static_cast<Node*>(fake.next);
+    fake.next = fake.next->next;
+    fake.next->prev = &fake;
+    delete old_node;
+  };
+
+  // O(1)
+  T& back() noexcept {
+    return static_cast<Node*>(fake.prev)->value;
+  };
+
+  // O(1)
+  T const& back() const noexcept {
+    return static_cast<Node*>(fake.prev)->value;
+  };
+
+  // O(1), strong
+  void push_back(T const& new_value) {
+    Node* new_node = new Node(new_value);
+    new_node->prev = fake.prev;
+    new_node->next = &fake;
+    fake.prev->next = new_node;
+    fake.prev = new_node;
+  };
+
+  // O(1)
+  void pop_back() noexcept {
+    Node* old_node = static_cast<Node*>(fake.prev);
+    fake.prev = fake.prev->prev;
+    fake.prev->next = &fake;
+    delete old_node;
+  };
+
+  // O(1)
+  iterator begin() noexcept {
+    return iterator(fake.next);
+  };
+
+  // O(1)
+  const_iterator begin() const noexcept {
+    return const_iterator(fake.next);
+  };
+
+  // O(1)
+  iterator end() noexcept {
+    return iterator(&fake);
+  };
+
+  // O(1)
+  const_iterator end() const noexcept {
+    return const_iterator(&fake);
+  };
+
+  // O(1)
+  reverse_iterator rbegin() noexcept {
+    return std::make_reverse_iterator(end());
+  };
+  // O(1)
+  const_reverse_iterator rbegin() const noexcept {
+    return std::make_reverse_iterator(end());
+  };
+
+// O(1)
+  reverse_iterator rend() noexcept {
+    return std::make_reverse_iterator(begin());
+  };
+  // O(1)
+  const_reverse_iterator rend() const noexcept {
+    return std::make_reverse_iterator(begin());
+  };
+
+  // O(n)
+  void clear() noexcept {
+    while (!empty()) {
+      pop_back();
+    }
+  };
+
+  // O(1), strong
+  iterator insert(const_iterator pos, T const& val);
+  // O(1)
+  iterator erase(const_iterator pos) noexcept;
+  // O(n)
+  iterator erase(const_iterator first, const_iterator last) noexcept;
+  // O(1)
+  void splice(const_iterator pos, list& other,
+              const_iterator first, const_iterator last) noexcept;
+
+  void swap(list& other) {
+    if (empty() && other.empty()) {
+      return;
+    }
+    if (empty()) {
+      fake.next = other.fake.next;
+      fake.prev = other.fake.prev;
+      fake.next->prev = &fake;
+      fake.prev->next = &fake;
+      other.fake.next = other.fake.next = &other.fake;
+      return;
+    }
+
+    if (other.empty()) {
+      other.swap(*this);
+      return;
+    }
+
+    std::swap(fake, other.fake);
+
+    fake.next->prev = &fake;
+    fake.prev->next = &fake;
+
+    other.fake.next->prev = &other.fake;
+    other.fake.prev->next = &other.fake;
   }
 
-  iterator &operator--() {
-    --ptr_;
-    if (ptr_ == *begin_ - 1)
-      ptr_ = *begin_ + size_ - 1;
-    return *this;
-  }
-  iterator operator--(int) {
-    iterator tmp = *this;
-    --(*this);
-    return tmp;
-  }
-
-  iterator &operator+=(difference_type n) {
-    ptr_ = *begin_ + (ptr_ - *begin_ + n) % size_;
-    return *this;
-  }
-  iterator &operator-=(difference_type n) {
-    ptr_ = *begin_ + (ptr_ - *begin_ - n % size_ + size_) % size_;
-    return *this;
-  }
-
-  reference operator[](difference_type index) { return *(ptr_ + index); }
-  value_type operator[](difference_type index) const { return *(ptr_ + index); }
-
-  friend bool operator==(const iterator &a, const iterator &b) { return a.ptr_ == b.ptr_; }
-  friend bool operator!=(const iterator &a, const iterator &b) { return a.ptr_ != b.ptr_; }
-  friend bool operator<(const iterator &a, const iterator &b) { return a.ptr_ < b.ptr_; }
-  friend bool operator>(const iterator &a, const iterator &b) { return b < a; }
-  friend bool operator<=(const iterator &a, const iterator &b) { return a.ptr_ <= b.ptr_; }
-  friend bool operator>=(const iterator &a, const iterator &b) { return b <= a; }
-
-  friend iterator operator+(iterator a, difference_type n) { return a += n; }
-  friend iterator operator+(difference_type n, iterator a) { return a += n; }
-  friend iterator operator-(iterator a, difference_type n) { return a -= n; }
-  friend difference_type operator-(iterator a, iterator b) { return a.ptr_ - b.ptr_; }
+  friend void swap(list& a, list& b) noexcept {
+    a.swap(b);
+  };
 
  private:
-  pointer *begin_;
-  difference_type size_;
-  pointer ptr_;
+  mutable FakeNode fake;
 };
 
-#endif //LAB2_05_CIRCULAR_BUFFER_H
+template <typename T>
+struct list<T>::FakeNode {
+
+  FakeNode() {};
+
+ private:
+  FakeNode* next;
+  FakeNode* prev;
+  friend struct list;
+};
+
+template <typename T>
+struct list<T>::Node : FakeNode {
+  T value;
+  Node(T const& element) : value(element) {}
+};
+
+template<typename T>
+struct list<T>::list_iterator : abstract_iterator<T> {
+  list_iterator(abstract_iterator<T> const& other) : abstract_iterator<T>(other.node) {};
+
+ private:
+  list_iterator(list<T>::FakeNode* node) : abstract_iterator<T>(node) {};
+  friend class list;
+};
+
+template<typename T>
+struct list<T>::const_list_iterator : abstract_iterator<T const> {
+
+  const_list_iterator(abstract_iterator<T const> const& other) : abstract_iterator<T const>(other.node) {};
+
+  const_list_iterator(list_iterator const& other) : abstract_iterator<T const>(other.node) {};
+
+  friend bool operator==(const_iterator const& a, const_iterator const& b) {
+    return a.node == b.node;
+  }
+
+  friend bool operator!=(const_iterator const& a, const_iterator const& b) {
+    return a.node != b.node;
+  }
+
+ private:
+  const_list_iterator(FakeNode* node) : abstract_iterator<T const>(node) {};
+  friend class list;
+};
+
+
+template <typename T>
+typename list<T>::iterator list<T>::insert(const_iterator pos, const T& val) {
+  Node* new_node = new Node(val);
+  FakeNode* old_node = pos.node;
+
+  new_node->next = old_node;
+  new_node->prev = old_node->prev;
+
+  old_node->prev->next = new_node;
+  old_node->prev = new_node;
+
+  return list_iterator(new_node);
+}
+
+template <typename T>
+typename list<T>::iterator list<T>::erase(const_iterator pos) noexcept {
+  FakeNode* old_node = pos.node;
+  iterator it(old_node->next);
+
+  old_node->prev->next = old_node->next;
+  old_node->next->prev = old_node->prev;
+
+  delete static_cast<Node*>(old_node);
+  return it;
+}
+
+template <typename T>
+typename list<T>::iterator list<T>::erase(const_iterator first, const_iterator last) noexcept {
+  iterator start(first.node);
+
+  while (start != last) {
+    start = erase(start);
+  };
+  return start;
+}
+
+template <typename T>
+void list<T>::splice(const_iterator pos, list<T>&, const_iterator first, const_iterator last) noexcept {
+  if (first == last)return;
+
+  FakeNode* last_in = last.node->prev;
+
+  first.node->prev->next = last.node;
+  last.node->prev = first.node->prev;
+
+  pos.node->prev->next = first.node;
+  first.node->prev = pos.node->prev;
+
+  pos.node->prev = last_in;
+  last_in->next = pos.node;
+}
