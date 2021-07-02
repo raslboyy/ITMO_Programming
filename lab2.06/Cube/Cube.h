@@ -29,6 +29,7 @@ class Cube {
   std::vector<move> solve();
 
   friend std::ostream &operator<<(std::ostream &os, const Cube &c);
+  friend std::istream &operator>>(std::istream &is, Cube &c);
   enum {
     UP = 0,
     DOWN,

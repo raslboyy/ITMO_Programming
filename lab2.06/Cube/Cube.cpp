@@ -167,3 +167,26 @@ void Cube::View::operator()(Cube &cube, unsigned int to) {
   else if (to == RIGHT)
     cube.faces = {cube.faces[UP], cube.faces[DOWN], cube.faces[FRONT], cube.faces[BACK], cube.faces[RIGHT], cube.faces[LEFT]};
 }
+
+std::istream &operator>>(std::istream &is, Cube &c) {
+  for (int i = 0; i < c.n(); i++)
+    for (int j = 0; j < c.n(); j++) {
+      is >> c.faces[Cube::UP].get(i, j);
+      c.faces[Cube::UP].get(i, j) -= '0';
+    }
+  std::vector<int> a = {Cube::FRONT, Cube::RIGHT, Cube::BACK, Cube::LEFT};
+
+  for (int i = 0; i < c.n(); i++)
+    for (int k = 0; k < 4; k++)
+      for (int j = 0; j < c.n(); j++) {
+        is >> c.faces[a[k]].get(i, j);
+        c.faces[a[k]].get(i, j) -= '0';
+      }
+
+  for (int i = 0; i < c.n(); i++)
+    for (int j = 0; j < c.n(); j++) {
+      is >> c.faces[Cube::DOWN].get(i, j);
+      c.faces[Cube::DOWN].get(i, j) -= '0';
+    }
+  return is;
+}
